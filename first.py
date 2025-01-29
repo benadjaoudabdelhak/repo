@@ -1,6 +1,9 @@
 import mysql.connector
 from faker import Faker
 import random
+from datetime import datetime
+
+
 
 db_config = {
     "host": "localhost",
@@ -66,17 +69,19 @@ tables = {
 for table_name, query in tables.items():
     cursor.execute(query)
  
-
 def insert_patients(n):
-    """Génère et insère des patients fictifs."""
+    """Génère et insère des patients fictifs avec correction du format de la date."""
     for _ in range(n):
+        date_naissance = fake.date_of_birth(minimum_age=20, maximum_age=90)
+        date_naissance = date_naissance.strftime("%Y-%m-%d")  # ✅ Convertir au bon format
+
         cursor.execute(
             "INSERT INTO patients (nom, prenom, date_naissance, num_secu, adresse, telephone) VALUES (%s, %s, %s, %s, %s, %s)",
-            (fake.last_name(), fake.first_name(), fake.date_of_birth(minimum_age=20, maximum_age=90),
-             fake.unique.ssn(), fake.address(), fake.phone_number())
+            (fake.last_name(), fake.first_name(), date_naissance, fake.ssn(), fake.address(), fake.phone_number())
         )
     conn.commit()
- 
+
+
 def insert_dossiers_medicaux(n):
     """Génère et insère des dossiers médicaux fictifs."""
     cursor.execute("SELECT patient_id FROM patients")
