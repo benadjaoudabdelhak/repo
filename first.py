@@ -8,7 +8,7 @@ from datetime import datetime
 db_config = {
     "host": "localhost",
     "user": "root",
-    "password": "root",
+    "password": "houdhoud",
 }
  
 
